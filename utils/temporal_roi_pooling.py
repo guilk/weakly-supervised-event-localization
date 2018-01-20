@@ -68,3 +68,4 @@ class RoIPool(nn.Module):
                             outputs[roi_ind, :, pl, ph, pw] = torch.max(
                                 torch.max(data[:, lstart:lend, hstart:hend, wstart:wend], 2)[0], 3)[0].view(-1)
         return outputs
+
