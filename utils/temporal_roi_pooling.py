@@ -40,16 +40,19 @@ class RoIPool(nn.Module):
             roi_width = max(roi_end_w - roi_start_w + 1, 1)
             roi_height = max(roi_end_h - roi_start_h + 1, 1)
             roi_length = max(roi_end_l - roi_start_l + 1, 1)
+            print roi_start_l,roi_end_l
 
             bin_size_w = float(roi_width) / float(self.pooled_width)
             bin_size_h = float(roi_height) / float(self.pooled_height)
             bin_size_l = float(roi_length) / float(self.pooled_length)
 
             for pl in range(self.pooled_length):
+
                 lstart = int(np.floor(pl * bin_size_l))
                 lend = int(np.floor((pl + 1) * bin_size_l))
                 lstart = min(data_length, max(0, lstart + roi_start_l))
                 lend = min(data_length, max(0, lend + roi_start_l))
+                print self.pooled_length, pl,bin_size_l,lstart,lend
 
                 for ph in range(self.pooled_height):
                     hstart = int(np.floor(ph * bin_size_h))
@@ -62,12 +65,18 @@ class RoIPool(nn.Module):
                         wstart = min(data_width, max(0, wstart + roi_start_w))
                         wend = min(data_width, max(0, wend + roi_start_w))
 
-                        is_empty = (hend <= hstart) or(wend <= wstart) or (lstart <= lend)
+                        is_empty = (hend <= hstart) or(wend <= wstart) or (lend <= lstart)
                         if is_empty:
                             outputs[roi_ind, :, pl, ph, pw] = 0
                         else:
                             data = features[batch_ind]
                             outputs[roi_ind, :, pl, ph, pw] = torch.max(
-                                torch.max(data[:, lstart:lend, hstart:hend, wstart:wend], 2)[0], 3)[0].view(-1)
+                                torch.max(
+                                    torch.max(
+                                        data[:, lstart:lend, hstart:hend, wstart:wend], dim=1, keepdim=True)[0],
+                                    dim=2, keepdim=True)[0],
+                                dim=3, keepdim=True)[0].view(-1)
+                            # outputs[roi_ind, :, pl, ph, pw] = torch.max(
+                            #     torch.max(data[:, lstart:lend, hstart:hend, wstart:wend], 2)[0], 3)[0].view(-1)
         return outputs
 
