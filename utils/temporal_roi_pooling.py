@@ -22,6 +22,8 @@ class RoIPool(nn.Module):
 
         for roi_ind, roi in enumerate(rois):
             batch_ind = int(roi[0].data[0])
+            # print roi.data[0]
+            # batch_ind = int(roi[0])
             # rois data struct:
             # roi_start_w, roi_start_h, roi_end_w, roi_end_h = np.round(
             #     roi[1:].data.cpu().numpy() * self.spatial_scale).astype(int)
