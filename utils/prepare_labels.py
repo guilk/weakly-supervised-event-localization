@@ -42,7 +42,7 @@ import skimage.io
 
 import sys
 
-sys.path.insert(0, '../../eval/densevid_eval/coco-caption')  # Hack to allow the import of pycocoeval
+sys.path.insert(0, '../../coco-caption')  # Hack to allow the import of pycocoeval
 from pycocoevalcap.tokenizer.ptbtokenizer import PTBTokenizer
 
 tokenizer = PTBTokenizer()
